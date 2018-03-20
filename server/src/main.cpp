@@ -12,6 +12,7 @@
 using boost::asio::ip::tcp;
 
 int main(int argc, char *argv[]) {
+  std::cout << sizeof(long) << std::endl;
   boost::asio::io_service ioService;
 
   tcp::acceptor acceptor(ioService, tcp::endpoint(tcp::v4(), 666));
