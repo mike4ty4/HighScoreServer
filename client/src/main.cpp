@@ -1,37 +1,95 @@
 // CS 383 High Score Server System (HSS System) - Client Side
 // Author: Michael Moldenhauer
-// Date: 2018-03-20 (TAI: 1900232473)
+// Date: 2018-04-02 (TAI: 1901346046)
 //
-// Main routine for client program.
-// This simple server is a console application only. Adopted from example at:
-// http://www.boost.org/doc/libs/1_66_0/doc/html/boost_asio/tutorial/tutdaytime2/src.html.
+// Main routine for client program. This is the full client program which will
+// be ready for use, unlike the prototype in previous commits.
+#include "MMClient.h"
+#include "MMSharedMemory.h"
 #include <iostream>
-#include <string>
-#include <boost/asio.hpp>
+#include <chrono>
+/*
+#include <boost/interprocess/shared_memory_object.hpp>
+#include <boost/interprocess/mapped_region.hpp>
+#include <boost/interprocess/managed_shared_memory.hpp>
+#include <boost/interprocess/allocators/allocator.hpp>
+#include <boost/interprocess/containers/string.hpp>
+#include <iostream>
+*/
 
-using boost::asio::ip::tcp;
+int main(int argc, char **argv) {
+  // Sanity check to see if we got enough arguments.
+  if(argc != 2) {
+    std::cout << "USAGE: hssclient <server IP address/URL>" << std::endl;
+    return(1); // bad args
+  } else {
+    // Set up a shared memory area to be used for communicating with client
+    // games.
+    MMSharedMemory sharedMem("hss_shared_mem", 1024);
+    
+    // Create the client object and attempt to connect to the server.
+    MMClient client;
+    int errCode;
+    client.connect(argv[1], errCode);
+    if(errCode != MMClient::E_SUCCESS) {
+      std::cout << "ERROR: Unable to connect to high-score server '"
+		<< argv[1] << "'!" << std::endl;
+      std::cout << "The client will now close." << std::endl;
+      return(2); // connection failure
+    }
 
-int main(int argc, char *argv[]) {
-  // Check for the right number of arguments.
-  if (argc-1 != 1) {
-    std::cout << "USAGE: consoleclient <server IP address>" << std::endl;
-    return 1; // failed!
+    sharedMem.writeReq("READY", "");
+    
+    // Wait for requests in the shared memory and send them to the server.
+    while(1) {
+      if(sharedMem.waitForAnyReq() == "COMMAND") {
+	sharedMem.writeReq("ACK", "");
+	std::string cmd(sharedMem.waitForAnyReq());
+	if(cmd == "NEWSCORE") {
+	  std::cout << "HSS CLIENT: Got new score dispatch request!" << std::endl;
+	  sharedMem.writeReq("ACK", "");
+	  
+	  // We have a new score request coming in.
+	  std::string playerName, gameName, score;
+	  sharedMem.waitForReq("PNAME");
+	  {
+	    std::cout << "HSS CLIENT: Got player name" << std::endl;
+	    playerName = sharedMem.getReqParam();
+	    sharedMem.writeReq("ACK", "");
+	  }
+
+	  sharedMem.waitForReq("GNAME");
+	  {
+	    std::cout << "HSS CLIENT: Got game name" << std::endl;
+	    gameName = sharedMem.getReqParam();
+	    sharedMem.writeReq("ACK", "");
+	  }
+
+	  sharedMem.waitForReq("SCORE");
+	  {
+	    std::cout << "HSS CLIENT: Got score" << std::endl;
+	    score = sharedMem.getReqParam();
+	    sharedMem.writeReq("ACK", "");
+	  }
+
+	  // Send it to the server!
+	  std::cout << "HSS CLIENT: Sending score to server..." << std::endl;
+	  client.sendHighScore(playerName, gameName, score, errCode);
+	  if(errCode != MMClient::E_SUCCESS) {
+	    std::cout << "ERROR: Failed to send score to server!" << std::endl;
+	  }
+	} else if(cmd == "QUIT") {
+	  std::cout << "HSS CLIENT: Got quit command!" << std::endl;
+	  sharedMem.writeReq("ACK", "");
+	  break;
+	}
+      }
+
+      sharedMem.writeReq("READY", "");
+    }
+
+    client.disconnect(errCode);
   }
-
-  // Try to connect to the server.
-  boost::asio::io_service ioService;
-  tcp::resolver resolver(ioService);
-  tcp::resolver::query query(argv[1], "666"); // server is on port 666
-  tcp::resolver::iterator it(resolver.resolve(query));
-  tcp::socket socket(ioService);
-
-  if (boost::asio::connect(socket, it) == tcp::resolver::iterator()) {
-    return(false); // connection failure
-  }
-  else {
-    return(true); // connection successful
-  }
-
-  return 0;
+  
+  return(0);
 }
-

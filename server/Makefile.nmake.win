@@ -1,0 +1,17 @@
+# Windows VC++ NMAKE makefile for server.
+# Created 2018-04-02 (TAI: 1901383160)
+INCDIR=.\inc
+BOOSTINC="C:\Program Files\boost\boost_1_66_0"
+BOOSTLIB="C:\Program Files\boost\boost_1_66_0\stage\lib"
+SRCS= \
+      src\main.cpp
+      
+hssserver.exe : $(SRCS)
+	   cl /EHsc /Fehssserver.exe /I$(INCDIR) /I$(BOOSTINC) $(SRCS) /link /LIBPATH:$(BOOSTLIB)
+
+clean :
+      del *.obj
+      del tester.exe
+      del hssserver.exe
+
+all: clean hssserver.exe

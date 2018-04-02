@@ -1,19 +1,56 @@
-#ifndef MMCLIENT_H
-#define MMCLIENT_H
-
 // CS 383 High Score Server System (HSS System) - Client Side
 // Author: Michael Moldenhauer
-// Date: 2018-02-27 (TAI: 1898446830)
+// Date: 2018-04-02 (TAI: 1901347779)
 //
-// Client communicator object class declaration file.
+// Declarations for the main class (MMClient) of the client program.
+// This class is used internally within the client executable: it is NOT
+// the one that is linked to user programs to communicate with the client
+// program.
 #include <string>
+#include <boost/asio.hpp>
 
-// The client itself. This is based on BOOST apio.
+// The class definition.
 class MMClient {
- private:
  public:
-  MMClient(); // Default constructor
-  bool connectToServer(std::string cServerIP); // Connect to the server.
-};
+  // Error codes.
+  enum {
+    E_SUCCESS,
+    E_SERVER_NOT_FOUND,
+    E_CONNECTION_FAILURE,
+    E_CONNECTION_DROPPED,
+    E_DISCONNECT_FAILED
+  };
+ private:
+  // Connection internals.
+  boost::asio::io_service ioService; // The Boost IO service object.
+  boost::asio::ip::tcp::socket socket; // The socket to connect with.
 
-#endif // MMCLIENT_H
+  // Write a string to the server.
+  void writeStringToServer(std::string server, int &e);
+ public:
+  // Default constructor.
+  // Parameters:
+  //    None.
+  MMClient();
+  
+  // Connect to server.
+  // Parameters:
+  //    serverAddress: IP address or DNS name of the server.
+  //    e: Error code return.
+  void connect(std::string serverAddress, int &e); // Connect to server.
+
+  // Disconnect from server.
+  // Parameters:
+  //    e: Error code return.
+  void disconnect(int &e); // Disconnect from server.
+
+  // Send a high score to the server.
+  // Parameters:
+  //    playerName: The name of the player.
+  //    gameName: The name of the game.
+  //    score: The high score entry for this player.
+  //    e: Error code return.
+  void sendHighScore(std::string playerName, std::string gameName,
+		     std::string score,
+		     int &e); // Send a high score value.
+};
