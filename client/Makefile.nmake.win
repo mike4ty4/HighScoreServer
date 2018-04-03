@@ -4,23 +4,14 @@ INCDIR=.\inc
 BOOSTINC="C:\Program Files\boost\boost_1_66_0"
 BOOSTLIB="C:\Program Files\boost\boost_1_66_0\stage\lib"
 SRCS= \
-      src\MMSharedMemory.cpp \
       src\MMClient.cpp \
       src\main.cpp
-
-TESTERSRCS= \
-      src\MMSharedMemory.cpp \
-      src\tester.cpp
       
 hssclient.exe : $(SRCS)
 	   cl /EHsc /Fehssclient.exe /I$(INCDIR) /I$(BOOSTINC) $(SRCS) /link /LIBPATH:$(BOOSTLIB)
 
-tester.exe : $(TESTERSRCS)
-	   cl /EHsc /Fetester.exe /I$(INCDIR) /I$(BOOSTINC) $(TESTERSRCS) /link /LIBPATH:$(BOOSTLIB)
-
 clean :
       del *.obj
-      del tester.exe
       del hssclient.exe
 
-all: clean hssclient.exe tester.exe
+all: clean hssclient.exe

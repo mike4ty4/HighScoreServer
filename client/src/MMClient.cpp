@@ -62,15 +62,15 @@ void MMClient::disconnect(int &e) {
 }
 
 // Send a high score to the server.
-void MMClient::sendHighScore(std::string playerName, std::string gameName,
+void MMClient::sendHighScore(std::string gameID, std::string playerName, 
 			     std::string score, int &e) {
   // Wrap the scores into a suitable format to send to the server.
   e = E_SUCCESS;
   writeStringToServer("NEWENT", e);
+  writeStringToServer("GID", e);
+  writeStringToServer(gameID, e);
   writeStringToServer("PNAME", e);
   writeStringToServer(playerName, e);
-  writeStringToServer("GNAME", e);
-  writeStringToServer(gameName, e);
   writeStringToServer("SCORE", e);
   writeStringToServer(score, e);
   writeStringToServer("ENDENT", e);

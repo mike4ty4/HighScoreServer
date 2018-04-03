@@ -46,11 +46,11 @@ class MMClient {
 
   // Send a high score to the server.
   // Parameters:
+  //    gameID: The ID code of the game.
   //    playerName: The name of the player.
-  //    gameName: The name of the game.
   //    score: The high score entry for this player.
   //    e: Error code return.
-  void sendHighScore(std::string playerName, std::string gameName,
+  void sendHighScore(std::string gameID, std::string playerName, 
 		     std::string score,
 		     int &e); // Send a high score value.
 };

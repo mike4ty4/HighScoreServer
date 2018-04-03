@@ -27,10 +27,10 @@ int main(int argc, char *argv[]) {
 	      << remoteHost.address().to_string() << std::endl;
 
     // Get input from this TCP connection.
-    while(1) {
+    boost::system::error_code err;
+    do {
       // Read in and stream all incoming input to the screen.
       boost::array<char, 128> buf;
-      boost::system::error_code err;
       std::size_t len(socket.read_some(boost::asio::buffer(buf),
 				       err));
       std::string str;
@@ -38,7 +38,9 @@ int main(int argc, char *argv[]) {
       if(len > 0) {
 	std::cout << str << std::endl;
       }
-    }
+    } while(err != boost::asio::error::eof);
+
+    std::cout << "Connection dropped." << std::endl;
   }
 
   return(0);
