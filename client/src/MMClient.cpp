@@ -33,7 +33,6 @@ MMClient::MMClient()
 void MMClient::connect(std::string serverAddress, int &e) {
   // Attempt to resolve the server and connect to the socket.
   // The server is on port 666. Try to resolve this address.
-/*
   e = E_SUCCESS;
   
   tcp::resolver resolver(ioService);
@@ -49,12 +48,10 @@ void MMClient::connect(std::string serverAddress, int &e) {
       e = E_CONNECTION_FAILURE;
     }
   }
-*/
 }
 
 // Disconnect from server.
 void MMClient::disconnect(int &e) {
-/*
   boost::system::error_code rv;
   socket.shutdown(tcp::socket::shutdown_both, rv);
   if(rv) {
@@ -62,13 +59,11 @@ void MMClient::disconnect(int &e) {
   } else {
     e = E_SUCCESS;
   }
-*/
 }
 
 // Send a high score to the server.
 void MMClient::sendHighScore(std::string gameID, std::string playerName, 
 			     std::string score, int &e) {
-/*
   // Wrap the scores into a suitable format to send to the server.
   e = E_SUCCESS;
   writeStringToServer("NEWENT", e);
@@ -79,5 +74,4 @@ void MMClient::sendHighScore(std::string gameID, std::string playerName,
   writeStringToServer("SCORE", e);
   writeStringToServer(score, e);
   writeStringToServer("ENDENT", e);
-*/
 }
