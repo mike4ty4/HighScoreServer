@@ -16,12 +16,10 @@ using namespace boost::asio::ip;
 // write and instead allow the error to propagate by remaining in that
 // variable.
 void MMClient::writeStringToServer(std::string writeStr, int &e) {
-/*
   if(e == E_SUCCESS) {
     std::cout << "   INT: writing string '" << writeStr << "'" << std::endl;
     write(socket, buffer(writeStr));
   }
-*/
 }
 
 // Default constructor.
