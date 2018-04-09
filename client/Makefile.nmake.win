@@ -1,4 +1,4 @@
-# Windows VC++ NMAKE makefile for server.
+# Windows VC++ NMAKE makefile for client.
 # Created 2018-04-02 (TAI: 1901384.7 ks)
 INCDIR=.\inc
 BOOSTINC="C:\Program Files\boost\boost_1_66_0"
@@ -7,11 +7,11 @@ SRCS= \
       src\MMClient.cpp \
       src\main.cpp
       
-hssclient.exe : $(SRCS)
-	   cl /EHsc /Fehssclient.exe /I$(INCDIR) /I$(BOOSTINC) $(SRCS) /link /LIBPATH:$(BOOSTLIB)
+prog01.exe : $(SRCS)
+	   cl /EHsc /Feprog01.exe /I$(INCDIR) /I$(BOOSTINC) $(SRCS) /link /LIBPATH:$(BOOSTLIB)
 
 clean :
       del *.obj
-      del hssclient.exe
+      del prog01.exe
 
-all: clean hssclient.exe
+all: clean prog01.exe
