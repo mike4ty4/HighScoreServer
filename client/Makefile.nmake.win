@@ -8,10 +8,10 @@ SRCS= \
       src\main.cpp
       
 prog01.exe : $(SRCS)
-	   cl /EHsc /Feprog01.exe /I$(INCDIR) /I$(BOOSTINC) $(SRCS) /link /LIBPATH:$(BOOSTLIB)
+	   cl /EHsc /Fehssclient.exe /I$(INCDIR) /I$(BOOSTINC) $(SRCS) /link /LIBPATH:$(BOOSTLIB)
 
 clean :
       del *.obj
-      del prog01.exe
+      del hssclient.exe
 
-all: clean prog01.exe
+all: clean hssclient.exe
