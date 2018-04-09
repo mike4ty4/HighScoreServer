@@ -11,7 +11,13 @@
 int main(int argc, char **argv) {
   // Sanity check to see if we got enough arguments.
   if(argc != 5) {
-    std::cout << "USAGE: hssclient <server hostname> <game ID> <player name> <score>" << std::endl;
+    std::cout << "USAGE: " << argv[0] << " <server hostname> <game ID> <player name> <score>" << std::endl;
+    std::cout << std::endl;
+    std::cout << "COMMAND-LINE INVOCATION EXAMPLE: " << std::endl;
+    std::cout << argv[0] << " 127.0.0.1 0 \"Sikozu Shanu\" 9000" << std::endl;
+    std::cout << std::endl;
+    std::cout << "WINDOWS C/C++ INVOCATION EXAMPLE:" << std::endl;
+    std::cout << "int result = system(\"cmd /c " << argv[0] << " 127.0.0.1 0 \\\"Sikozu Shanu\\\" 9000);" << std::endl;
     return(1); // bad args
   } else {
     // Create the client object and attempt to connect to the server.
