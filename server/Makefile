@@ -2,9 +2,9 @@
 # Created 2018-02-27 (TAI: 1898452579)
 CC=gcc
 CXX=g++
-CXXFLAGS=-I/usr/local/boost_1_59_0/
-LDFLAGS=-L/usr/local/boost_1_59_0/stage/lib
-LIBS=-lboost_system -lboost_thread
+CXXFLAGS=-static -I/home/manager/boost_1_66_0/
+LDFLAGS=-L/home/manager/boost_1_66_0/stage/lib
+LIBS=-lpthread -lboost_system -lboost_thread
 SRCS=src/main.cpp
 
 hssserver: $(SRCS)
