@@ -5,6 +5,8 @@
 // Implementation of the main class (MMClient) for the client program.
 #include "MMClient.h"
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 using namespace boost::asio;
 using namespace boost::asio::ip;
@@ -18,7 +20,15 @@ using namespace boost::asio::ip;
 void MMClient::writeStringToServer(std::string writeStr, int &e) {
   if(e == E_SUCCESS) {
     std::cout << "   INT: writing string '" << writeStr << "'" << std::endl;
-    write(socket, buffer(writeStr));
+    // In order to ensure this write is cleanly demarcated from successive
+    // strings, we must first send the length of the string that will be coming
+    // next.
+    std::stringstream ssLength;
+    ssLength << std::setfill('0') << std::setw(10) << writeStr.size();
+    std::string lenStr(ssLength.str());
+    std::cout << "SZ: " << lenStr.size() << std::endl;
+    write(socket, buffer(lenStr)); // always 10 bytes
+    write(socket, buffer(writeStr)); // the actual string itself
   }
 }
 
