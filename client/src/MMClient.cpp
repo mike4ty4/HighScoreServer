@@ -26,7 +26,6 @@ void MMClient::writeStringToServer(std::string writeStr, int &e) {
     std::stringstream ssLength;
     ssLength << std::setfill('0') << std::setw(10) << writeStr.size();
     std::string lenStr(ssLength.str());
-    std::cout << "SZ: " << lenStr.size() << std::endl;
     write(socket, buffer(lenStr)); // always 10 bytes
     write(socket, buffer(writeStr)); // the actual string itself
   }
