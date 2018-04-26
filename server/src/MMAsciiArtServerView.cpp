@@ -9,6 +9,7 @@
 MMAsciiArtServerView::MMAsciiArtServerView() {
   // Initialize the ncurses system.
   initscr();
+  refresh();
 
   // Create the window for the high score header.
   titleWindow = newwin(3, 80, 0, 0);
