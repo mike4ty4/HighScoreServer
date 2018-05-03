@@ -4,6 +4,7 @@
 //
 // Server controller class implementation.
 #include "MMServerController.h"
+#include "MMLogger.h"
 
 // Default constructor
 MMServerController::MMServerController()
@@ -29,21 +30,26 @@ void MMServerController::prepareNewGame(int gameID, std::string gameName) {
 
 // Begin a new score entry.
 void MMServerController::startNewEntry() {
+  MMLogger::getInstance()->logEvent("Starting a new score entry.");
   gameIDBuf = ""; playerNameBuf = ""; scoreBuf = "";
 }
 
 // Receive the game ID for the score entry.
 void MMServerController::receiveGameID(std::string gameID) {
+  MMLogger::getInstance()->logEvent(" - Received game ID \"" + gameID + "\"");
   gameIDBuf = gameID;
 }
 
 // Receive the player name for the score entry.
 void MMServerController::receivePlayerName(std::string playerName) {
+  MMLogger::getInstance()->logEvent(" - Received player name \"" + playerName +
+				    "\"");
   playerNameBuf = playerName;
 }
 
 // Receive the score for the score entry.
 void MMServerController::receiveScore(std::string score) {
+  MMLogger::getInstance()->logEvent(" - Received score \"" + score + "\"");
   scoreBuf = score;
 }
 
@@ -58,6 +64,8 @@ void MMServerController::endEntry() {
   MMServerModel::HighScoreVector hsv;
   model->getHiScores(gameID, 5, hsv);
   view->updateGameView(gameID, hsv);
+
+  MMLogger::getInstance()->logEvent("Successfully finalized score entry.");
 }
 
 // Send a game score to the model. (Delegate)

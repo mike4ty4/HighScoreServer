@@ -43,17 +43,21 @@ int main(int argc, char *argv[]) {
 
     // Get the commands.
     while(1) {
-      std::string netInStr;
-      if((netInStr = sockWrap.receiveString()) == "NEWENT") {
+      std::string netInStr = sockWrap.receiveString();
+      if(netInStr == "NEWENT") {
 	serverController.startNewEntry();
-      } else if((netInStr = sockWrap.receiveString()) == "GID") {
+      } else if(netInStr == "GID") {
 	serverController.receiveGameID(sockWrap.receiveString());
-      } else if((netInStr = sockWrap.receiveString()) == "PNAME") {
+      } else if(netInStr == "PNAME") {
 	serverController.receivePlayerName(sockWrap.receiveString());
-      } else if((netInStr = sockWrap.receiveString()) == "SCORE") {
+      } else if(netInStr == "SCORE") {
 	serverController.receiveScore(sockWrap.receiveString());
-      } else if((netInStr = sockWrap.receiveString()) == "ENDENT") {
+      } else if(netInStr == "ENDENT") {
 	serverController.endEntry();
+	break;
+      } else {
+	// Invalid input. Give up.
+	MMLogger::getInstance()->logEvent("Invalid input to server. Abandoning score input.");
 	break;
       }
     }

@@ -4,7 +4,7 @@ CC=gcc
 CXX=g++
 CXXFLAGS=-g --std=c++11 -I/home/manager/boost_1_66_0/ -I./inc
 LDFLAGS=-L/home/manager/boost_1_66_0/stage/lib
-LIBS=-lpthread -lncurses
+LIBS=-lpthread -lncursesw
 SRCS=src/MMLogger.cpp src/MMSocketWrapper.cpp src/MMServerModel.cpp src/MMServerController.cpp src/MMAsciiArtServerView.cpp src/main.cpp
 
 hssserver: $(SRCS)

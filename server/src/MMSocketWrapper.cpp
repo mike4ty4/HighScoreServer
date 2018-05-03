@@ -8,38 +8,42 @@
 
 using boost::asio::ip::tcp;
 
-// Private function to receive bytes from the network socket. NOTE: limited to
-// max 128 bytes read.
+// Private function to receive bytes from the network socket.
 std::string MMSocketWrapper::receiveBytes(std::size_t nBytes) {
-  // Clip too-long reads.
-  if(nBytes > 128) {
-    nBytes = 128;
-    MMLogger::getInstance()->logEvent(std::string("requested read of too many bytes (got ") +
-				      std::to_string(nBytes) + " which exceeds 128 max)");
-  }
-
   // Now try to read it in.
   boost::system::error_code err;
-  std::size_t len;
-  do {
+  std::size_t bytesRemaining(nBytes), bufferLen(128), maxBuffer(128);
+  std::string returnStr;
+  if(bytesRemaining < maxBuffer)
+    bufferLen = bytesRemaining;
+  while(bytesRemaining) {
+    // Try to get some bytes from the server.
     boost::array<char, 128> buf;
-    len = boost::asio::read((*socket), boost::asio::buffer(buf),
-			    boost::asio::transfer_exactly(nBytes), err);
-    if(len == 0) {
-      // Ignore empty reads.
-    } else if(len != nBytes) {
-      MMLogger::getInstance()->logEvent(std::string("improper read of ") +
-					std::to_string(len) +
-					std::string("bytes while requesting read of ") +
-					std::to_string(nBytes) + std::string(" bytes"));
-      return(""); // Failure!
+    std::size_t readLen;
+    bufferLen = boost::asio::read(*socket, boost::asio::buffer(buf),
+				  boost::asio::transfer_exactly(nBytes), err);
+    if(bytesRemaining < bufferLen)
+      bufferLen = bytesRemaining;
+    if(!err) {
+      // Accumulate these bytes.
+      std::string byteStr;
+      std::copy(buf.begin(), buf.begin() + bufferLen,
+		std::back_inserter(byteStr));
+      returnStr += byteStr;
+      bytesRemaining -= bufferLen;
+    } else if(err == boost::asio::error::eof) {
+      MMLogger::getInstance()->logEvent(std::string("Connection dropped by peer"));
+      return("");
     } else {
-      // Got it!
-      std::string returnStr;
-      std::copy(buf.begin(), buf.begin() + nBytes, std::back_inserter(returnStr));
-      return(returnStr);
+      // Bad!
+      MMLogger::getInstance()->logEvent(std::string("BOOST Network error: ") +
+					err.message().c_str());
+      return("");
     }
-  } while(err != boost::asio::error::eof);
+  };
+
+  // Done!
+  return(returnStr);
 }
 
 // Default constructor
@@ -89,7 +93,7 @@ std::string MMSocketWrapper::receiveString() {
     std::string inpStr(receiveBytes(lenVal));
     if(inpStr.size() != lenVal) {
       MMLogger::getInstance()->logEvent("Tried to read in string and was cut abruptly at length " +
-					 std::to_string(inpStr.size()) + "out of " +
+					 std::to_string(inpStr.size()) + " out of " +
 					 std::to_string(lenVal));
       return(""); // failure
     }

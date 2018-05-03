@@ -92,6 +92,7 @@ int MMServerModel::getHiScores(int gameID, int numToGet,
       vec.push_back(std::pair<std::string, int>(scoreIt->second,
 						scoreIt->first));
       ++scoreIt;
+      std::cout << "Vec size: " << vec.size() << std::endl;
     }
 
     return(E_SUCCESS);
