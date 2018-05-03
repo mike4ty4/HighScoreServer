@@ -3,7 +3,7 @@
 # Created at: 2018-05-03 (TAI: 1904043548)
 
 # Do randomized test case.
-Players="Sikozu
+Players="SikozuShanu
 Cilantro
 Skywalker
 Vulture

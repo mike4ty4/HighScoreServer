@@ -66,9 +66,15 @@ void MMAsciiArtServerView::updateGameView(int gameID,
   for(std::vector< std::pair<std::string, int> >::iterator it(scoreList.begin());
       it != scoreList.end();
       ++it) {
+    // Truncate name if needed so it will fit without messing things up
+    std::string nameStr(it->first.c_str());
+    if(nameStr.size() > 14) {
+      nameStr = nameStr.substr(0, 11) + "...";
+    }
+      
     // Write name
     wmove(gameWindows[gameID], yCoord, 0);
-    waddstr(gameWindows[gameID], it->first.c_str());
+    waddstr(gameWindows[gameID], nameStr.c_str());
 
     // Write score
     wmove(gameWindows[gameID], yCoord, 15);
